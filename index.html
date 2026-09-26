@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Calculation</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid #333;
+        }
+        h2 {
+            text-align: center;
+            color: #00e676;
+            margin-top: 0;
+            letter-spacing: 1px;
+            font-size: 22px;
+        }
+        .info-section {
+            background: #262626;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #00e676;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+        .label {
+            color: #aaa;
+        }
+        .value {
+            font-weight: bold;
+            color: #fff;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background-color: #2a2a2a;
+            color: #fff;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border 0.3s;
+        }
+        input[type="number"]:focus {
+            border-color: #00e676;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00e676;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #00c853;
+        }
+        .output-box {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            border: 1px dashed #555;
+            display: none;
+        }
+        .output-header {
+            text-align: center;
+            font-weight: bold;
+            color: #00e676;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        .version {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 15px;
+        }
+        .divider {
+            border-top: 1px solid #444;
+            margin: 12px 0;
+        }
+        .status-alert {
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .success {
+            background-color: rgba(0, 230, 118, 0.15);
+            color: #00e676;
+        }
+        .danger {
+            background-color: rgba(255, 23, 68, 0.15);
+            color: #ff1744;
+        }
+        .score-box {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: #00e676;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>=== ATTENDANCE SYSTEM ===</h2>
+    
+    <!-- পূর্বনির্ধারিত স্টুডেন্ট প্রোফাইল ফর্ম -->
+    <div class="info-section">
+        <div class="info-row">
+            <span class="label">Student Name:</span>
+            <span class="value">Md Sadman</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Roll Number:</span>
+            <span class="value">19</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Total Classes Held:</span>
+            <span class="value">60</span>
+        </div>
+    </div>
+
+    <!-- ইনপুট ফর্ম ফিল্ড -->
+    <div class="input-group">
+        <label for="attended">Enter Attended Classes (0 - 60):</label>
+        <input type="number" id="attended" min="0" max="60" placeholder="উপস্থিত ক্লাসের সংখ্যা দিন">
+    </div>
+
+    <button onclick="calculateAttendance()">Calculate Result</button>
+
+    <!-- ২য় ছবির মতো হুবহু আউটপুট ইন্টারফেস -->
+    <div class="output-box" id="outputBox">
+        <div class="output-header">=== ATTENDANCE CALCULATION ===</div>
+        <div class="version">RESULT 1.0.1</div>
+        
+        <div class="info-row"><span class="label">Student Name :</span><span class="value">Md Sadman</span></div>
+        <div class="info-row"><span class="label">Roll Number :</span><span class="value">19</span></div>
+        <div class="divider"></div>
+        
+        <div class="info-row"><span class="label">Total Classes held :</span><span class="value">60</span></div>
+        <div class="info-row"><span class="label">Total Classes attended :</span><span id="outAttended" class="value">0</span></div>
+        <div class="info-row"><span class="label">Classes absent :</span><span id="outAbsent" class="value">0</span></div>
+        <div class="info-row"><span class="label">Attendance Percentage :</span><span id="outPercentage" class="value">0%</span></div>
+        <div class="info-row"><span class="label">Minimum Required :</span><span class="value">60.00%</span></div>
+        
+        <div class="divider"></div>
+        
+        <div id="statusMessage" class="status-alert"></div>
+        <div id="actionMessage" style="font-size: 14px; margin-top: 8px; text-align: center; color: #ddd;"></div>
+        <div id="rewardFineMessage" style="font-size: 14px; margin-top: 5px; text-align: center; font-weight: bold;"></div>
+        
+        <div class="divider"></div>
+        <div class="score-box" id="outScore">=== Attendance Score: 0 / 60 ===</div>
+    </div>
+</div>
+
+<script>
+    function calculateAttendance() {
+        const totalClasses = 60;
+        const attendedInput = document.getElementById('attended').value;
+        
+        if (attendedInput === "" || attendedInput < 0 || attendedInput > 60) {
+            alert("দয়া করে ০ থেকে ৬০ এর মধ্যে একটি সঠিক উপস্থিতির সংখ্যা দিন।");
+            return;
+        }
+
+        const attendedClasses = parseInt(attendedInput);
+        const absentClasses = totalClasses - attendedClasses;
+        const attendancePercentage = (attendedClasses / totalClasses) * 100;
+
+        // ভ্যালু সেট করা
+        document.getElementById('outAttended').innerText = attendedClasses;
+        document.getElementById('outAbsent').innerText = absentClasses;
+        document.getElementById('outPercentage').innerText = attendancePercentage.toFixed(2) + "%";
+        document.getElementById('outScore').innerText = `=== Attendance Score: ${attendedClasses} / ${totalClasses} ===`;
+
+        const statusMessage = document.getElementById('statusMessage');
+        const actionMessage = document.getElementById('actionMessage');
+        const rewardFineMessage = document.getElementById('rewardFineMessage');
+
+        // ১ম ছবির হোমওয়ার্ক লজিক এবং ২য় ছবির টেক্সট ফরম্যাট অ্যাপ্লাই
+        if (attendancePercentage < 60) {
+            const fine = absentClasses * 50;
+            statusMessage.innerText = "Status : Student is penalized for poor attendance.";
+            statusMessage.className = "status-alert danger";
+            actionMessage.innerText = "Regularization is required to perform in exams.";
+            rewardFineMessage.innerText = `Fine Amount : ${fine} Taka`;
+            rewardFineMessage.style.color = "#ff1744";
+        } else {
+            statusMessage.innerText = "Status : Student meets the requirement for attendance.";
+            statusMessage.className = "status-alert success";
+            actionMessage.innerText = "Regularization is allowed to perform in exams.";
+            
+            if (attendancePercentage === 100) {
+                rewardFineMessage.innerText = "Reward : You will receive 1000 Taka reward!";
+                rewardFineMessage.style.color = "#00e676";
+            } else {
+                rewardFineMessage.innerText = "No fine and no reward.";
+                rewardFineMessage.style.color = "#aaa";
+            }
+        }
+
+        // আউটপুট বক্স শো করা
+        document.getElementById('outputBox').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
