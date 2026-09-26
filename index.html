@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Calculator</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            font-size: 22px;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header {
+            font-weight: bold;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .student-info {
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 20px;
+            border: 2px solid #000000;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: #ffffff;
+            color: #000000;
+            border: 2px solid #000000;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #f0f0f0;
+        }
+        .note {
+            margin-top: 15px;
+            font-size: 18px;
+            font-style: italic;
+            color: #333333;
+        }
+        .output-box {
+            margin-top: 40px;
+            border-top: 3px solid #000000;
+            padding-top: 20px;
+            line-height: 1.8;
+            display: none;
+        }
+        .divider {
+            margin: 15px 0;
+            border-top: 1px dashed #000000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <div class="header">=== ATTENDANCE SYSTEM ===</div>
+    
+    <div class="student-info">
+        Student Name: <strong>Md Sadman</strong><br>
+        Roll Number: <strong>19</strong><br>
+        Total Classes Held: <strong>60</strong>
+    </div>
+
+    <div class="input-group">
+        <label for="attended">Enter Attended Classes (0 - 60):</label>
+        <input type="number" id="attended" min="0" max="60">
+        <div class="note">[Note: minimum class attendance 70%]</div>
+    </div>
+
+    <button onclick="calculateResult()">Calculate Result</button>
+
+    <!-- ২য় ছবির হুবহু লাইন বাই লাইন ফরম্যাট (সাদা পাতায় বড় অক্ষরে) -->
+    <div class="output-box" id="outputBox">
+        <div class="header" style="text-align: center;">=== ATTENDANCE CALCULATION ===</div>
+        <div style="text-align: center; font-size: 16px; margin-bottom: 15px;">RESULT 1.0.1</div>
+        
+        Student Name : <strong>Md Sadman</strong><br>
+        Roll Number : <strong>19</strong>
+        
+        <div class="divider"></div>
+        
+        Total Classes held : <span id="outTotal">60</span><br>
+        Total Classes attended : <span id="outAttended">0</span><br>
+        Classes absent : <span id="outAbsent">0</span><br>
+        Attendance Percentage : <span id="outPercentage">0%</span><br>
+        Minimum Required : 70.00%
+        
+        <div class="divider"></div>
+        
+        <strong>Status :</strong> <span id="statusMessage"></span><br>
+        <span id="actionMessage"></span><br>
+        <span id="fineRewardMessage"></span>
+        
+        <div class="divider"></div>
+        
+        <div style="text-align: center; font-weight: bold;" id="outScore">=== Attendance Score: 0 / 60 ===</div>
+    </div>
+</div>
+
+<script>
+    function calculateResult() {
+        const totalClasses = 60;
+        const inputVal = document.getElementById('attended').value;
+        
+        if (inputVal === "" || inputVal < 0 || inputVal > 60) {
+            alert("Please enter a valid number between 0 and 60");
+            return;
+        }
+
+        const attendedClasses = parseInt(inputVal);
+        const absentClasses = totalClasses - attendedClasses;
+        const attendancePercentage = (attendedClasses / totalClasses) * 100;
+
+        document.getElementById('outAttended').innerText = attendedClasses;
+        document.getElementById('outAbsent').innerText = absentClasses;
+        document.getElementById('outPercentage').innerText = attendancePercentage.toFixed(2) + "%";
+        document.getElementById('outScore').innerText = `=== Attendance Score: ${attendedClasses} / ${totalClasses} ===`;
+
+        const statusMessage = document.getElementById('statusMessage');
+        const actionMessage = document.getElementById('actionMessage');
+        const fineRewardMessage = document.getElementById('fineRewardMessage');
+
+        // ৭০% উপস্থিতির শর্ত অনুযায়ী কন্ডিশন
+        if (attendancePercentage < 70) {
+            const fine = absentClasses * 50;
+            statusMessage.innerText = "Student is penalized for poor attendance.";
+            actionMessage.innerText = "Regularization is required to perform in exams.";
+            fineRewardMessage.innerText = "Fine Amount : " + fine + " Taka";
+        } else {
+            statusMessage.innerText = "Student meets the requirement for attendance.";
+            actionMessage.innerText = "Regularization is allowed to perform in exams.";
+            
+            if (attendancePercentage === 100) {
+                fineRewardMessage.innerText = "Reward : You will receive 1000 Taka reward!";
+            } else {
+                fineRewardMessage.innerText = "No fine and no reward.";
+            }
+        }
+
+        document.getElementById('outputBox').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
